@@ -1,0 +1,55 @@
+@require: option
+@require: class-slydifi/theme/akasaka
+@require: figbox/figbox
+
+let ex-big-textbox ?:size-opt it =
+  let size = Option.from 48pt size-opt in
+    FigBox.textbox?:(set-font-size size) it
+
+let big-textbox ?:size-opt it =
+  let size = Option.from 32pt size-opt in
+    FigBox.textbox?:(set-font-size size) it
+
+let mid-textbox ?:size-opt it =
+  let size = Option.from 24pt size-opt in
+    FigBox.textbox?:(set-font-size size) it
+
+open FigBox
+in
+
+document '<
+  +set-config(|
+    SlydifiThemeAkasaka.default-config with
+    color-emph = Color.black;
+  |);
+
+  +make-title(|
+    title = {
+      |来る新 JIT エンジンについて
+      |知った気になる
+      |};
+    author = {|nsfisis (いまむら)|};
+    date = {|PHPカンファレンス小田原 2024|};
+  |);
+
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+  +frame{自己紹介}<
+    +fig-center(vconcat [
+      gap 75pt;
+      hconcat [
+        big-textbox{nsfisis (いまむら)};
+        gap 20pt;
+        include-image 50pt `assets/me.jpeg`;
+      ];
+      gap 20pt;
+      big-textbox{\@ デジタルサーカス株式会社};
+    ]);
+  >
+
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+  +section{|TODO|}<
+  >
+
+>
