@@ -49,7 +49,149 @@ document '<
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-  +section{|TODO|}<
+  +frame{普通の PHP プログラム}<
+    +fig-center(vconcat [
+      gap 75pt;
+      big-textbox{PHP スクリプト};
+      gap 30pt;
+      big-textbox{opcode (VM で実行)};
+    ]);
+  >
+
+  +frame{JIT コンパイルとは}<
+    +listing{
+      * Just In Time (ちょうど間に合って)
+      * 広義: 実行時にコンパイルする
+      * 狭義: 実行時に機械語へコンパイルする
+      * PHP 8.0 で導入
+    }
+  >
+
+  +frame{PHP \+ JIT コンパイル}<
+    +fig-center(vconcat [
+      gap 75pt;
+      big-textbox{PHP スクリプト};
+      gap 30pt;
+      big-textbox{opcode (VM で実行)};
+      gap 30pt;
+      big-textbox{機械語 (CPU で実行)};
+    ]);
+  >
+
+  +frame{JIT コンパイルの難点}<
+    +listing{
+      * コンパイルに時間を割けない
+        ** コンパイルに1分かかるので実行は待ってというわけにはいかない
+        ** コンパイルすればするほど速くなるわけではない
+      * すべての情報が事前に確定しない
+        ** 動的言語。変数が未定義かも、型が想定と違うかも
+        ** \code(`$a`); + \code(`$b`); が常に int と int の足し算とは限らない
+    }
+  >
+
+  +frame{Tracing JIT}<
+    +p{
+      何度も繰り返し実行される部分、何度も通る分岐などを特定し、
+      そこだけピンポイントで JIT コンパイルする
+    }
+    +p{}
+    +p{
+      INI で \code(`opcache.jit=tracing`); (デフォルト) にするとこのモードになる
+    }
+  >
+
+  +frame{Tracing JIT}<
+    +listing{
+      * コンパイルに時間を割けない
+        ** 繰り返し実行される箇所だけコンパイルする
+        ** これまで何度も実行されたのだから、これからも何度も実行されるはず
+      * すべての情報が事前に確定しない
+        ** 実際の実行パターンを元に、そのケースに最適化させた機械語を生成する
+        ** \code(`$a`); + \code(`$b`); が int と int だったときに限定した機械語を生成し、
+           想定と違っていれば従来の opcode を VM で動かす
+    }
+  >
+
+  +frame{PHP 8.4 での変更}<
+    +p{
+      PHP 8.4 では、JIT コンパイルの仕組みに大きな変更が入る
+    }
+  >
+
+  +frame{PHP 8.4 での変更}<
+    +p{
+      IR (Intermediate Representation、中間表現) の導入
+    }
+    +fig-center(vconcat [
+      gap 40pt;
+      mid-textbox{PHP スクリプト};
+      gap 30pt;
+      mid-textbox{opcode (VM で実行)};
+      gap 30pt;
+      mid-textbox{IR (中間表現)};
+      gap 30pt;
+      mid-textbox{機械語 (CPU で実行)};
+    ]);
+  >
+
+  +frame{IR 導入のモチベーション}<
+    +listing{
+      * opcode から直接の変換だと制限が大きい
+        ** 最適化しづらい
+          *** opcode の表現に制約を受ける
+        ** CPU アーキテクチャごとに別々の実装を抱える
+      * PHP と密結合
+        ** 誰もメンテナンスできない
+    }
+  >
+
+  +frame{IR の特徴}<
+    +listing{
+      * より強力な最適化
+        ** SSA \+ CFG から Sea-of-Nodes へ
+      * PHP に依存しない
+    }
+  >
+
+  +frame{実際どうなった？}<
+    +p{
+      TODO: ベンチマークのスクリーンショットを引用
+    }
+  >
+
+  +frame{実際どうなった？}<
+    +listing{
+      * 生成された機械語の速度: 0-5 % 向上
+      * Tracing JIT のコンパイルにかかる時間: ほぼ同等
+      * Function JIT のコンパイルにかかる時間: 4倍ほど遅い
+    }
+  >
+
+  +frame{実際どうなった？}<
+    +p{
+      8.3.4 と master を比較
+    }
+    +listing{
+      * \code(`ext/opcache/jit`); の変更量
+        ** 5.9万行追加、4.9万行削除
+      * アーキテクチャごとのコード生成部
+        ** x86: 1.1万行追加、1.6万行削除
+        ** arm64: 0.65万行追加、1.1万行削除
+    }
+  >
+
+  +frame{知った気になる}<
+  >
+
+  +frame{知った気になる}<
+    +fig-center(vconcat [
+      gap 60pt;
+      big-textbox{8.4 で変わる JIT};
+      gap 30pt;
+      mid-textbox{opcode と機械語の間に中間表現 (IR) が導入され、};
+      gap 10pt;
+      mid-textbox{より最適化がかけられるように};
+    ]);
   >
 
 >
