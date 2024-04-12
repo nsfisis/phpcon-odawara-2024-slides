@@ -40,13 +40,16 @@ document '<
 
   +frame{自己紹介}<
     +fig-center(vconcat [
-      gap 75pt;
-      hconcat [
-        big-textbox{nsfisis (いまむら)};
-        gap 20pt;
-        include-image 50pt `assets/me.jpeg`;
-      ];
-      gap 20pt;
+      gap 30pt;
+      big-textbox{いまむら};
+    ]);
+    +fig-center(vconcat [
+      ex-big-textbox{nsfisis};
+    ]);
+    +fig-center(vconcat [
+      include-image 128pt `assets/me.jpeg`;
+    ]);
+    +fig-center(vconcat [
       big-textbox{\@ デジタルサーカス株式会社};
     ]);
   >
@@ -55,34 +58,33 @@ document '<
 
   +frame{普通の PHP プログラム}<
     +fig-center(vconcat [
-      gap 75pt;
+      gap 30pt;
       mid-textbox{PHP スクリプト} |> with-frame;
       gap 30pt;
-      mid-textbox{opcode (VM で実行)} |> with-frame;
+      hconcat [
+        mid-textbox{opcode} |> with-frame;
+        gap 20pt;
+        textbox{VM で実行} |> hvmargin 18pt;
+      ];
     ]);
   >
 
   +frame{普通の PHP プログラム}<
     +fig-center(vconcat [
-      gap 75pt;
+      gap 30pt;
       mid-textbox{PHP スクリプト} |> with-frame;
       gap 30pt;
-      mid-textbox{opcode (VM で実行)} |> with-frame;
-      gap 50pt;
-      textbox{もっと速くしたい};
+      hconcat [
+        mid-textbox{opcode} |> with-frame;
+        gap 20pt;
+        textbox{VM で実行} |> hvmargin 18pt;
+      ];
     ]);
-  >
-
-  +frame{普通の PHP プログラム}<
     +fig-center(vconcat [
-      gap 75pt;
-      mid-textbox{PHP スクリプト} |> with-frame;
-      gap 30pt;
-      mid-textbox{opcode (VM で実行)} |> with-frame;
-      gap 50pt;
-      textbox{もっと速くしたい};
+      gap 40pt;
+      mid-textbox{もっと速くしたい};
       gap 20pt;
-      textbox{機械語にして CPU で動かす};
+      mid-textbox{機械語にして CPU で動かす};
     ]);
   >
 
@@ -101,14 +103,35 @@ document '<
     }
   >
 
-  +frame{PHP \+ JIT コンパイル}<
+  +frame{普通の PHP プログラム}<
     +fig-center(vconcat [
-      gap 75pt;
+      gap 30pt;
       mid-textbox{PHP スクリプト} |> with-frame;
       gap 30pt;
-      mid-textbox{opcode (VM で実行)} |> with-frame;
+      hconcat [
+        mid-textbox{opcode} |> with-frame;
+        gap 20pt;
+        textbox{VM で実行} |> hvmargin 18pt;
+      ];
+    ]);
+  >
+
+  +frame{PHP \+ JIT コンパイル}<
+    +fig-center(vconcat [
       gap 30pt;
-      mid-textbox{機械語 (CPU で実行)} |> with-frame;
+      mid-textbox{PHP スクリプト} |> with-frame;
+      gap 30pt;
+      hconcat [
+        mid-textbox{opcode} |> with-frame;
+        gap 20pt;
+        textbox{VM で実行} |> hvmargin 18pt;
+      ];
+      gap 30pt;
+      hconcat [
+        mid-textbox{機械語} |> with-frame;
+        gap 20pt;
+        textbox{CPU で実行} |> hvmargin 18pt;
+      ];
     ]);
   >
 
@@ -125,12 +148,13 @@ document '<
 
   +frame{Tracing JIT}<
     +p{
-      何度も繰り返し実行される部分、何度も通る分岐などを特定し、
-      そこだけピンポイントで JIT コンパイルする
+      コンパイルする前に実際に実行してみて、
+      何度も繰り返し実行される部分・何度も通る分岐などを特定し、
+      そこだけピンポイントでコンパイルする
     }
     +p{}
     +p{
-      INI で \code(`opcache.jit=tracing`); (デフォルト) にするとこのモードになる
+      INI で \code(`opcache.jit=tracing`); にするとこのモードになる (デフォルトの挙動)
     }
   >
 
@@ -165,36 +189,54 @@ document '<
     }
   >
 
-  +frame{普通の PHP プログラム}<
+  +frame{PHP 8.3 まで}<
     +fig-center(vconcat [
-      gap 75pt;
+      gap 20pt;
       mid-textbox{PHP スクリプト} |> with-frame;
-      gap 30pt;
-      mid-textbox{opcode (VM で実行)} |> with-frame;
+      gap 20pt;
+      hconcat [
+        mid-textbox{opcode} |> with-frame;
+        gap 20pt;
+        textbox{VM で実行} |> hvmargin 18pt;
+      ];
+      gap 20pt;
+      hconcat [
+        mid-textbox{機械語} |> with-frame;
+        gap 20pt;
+        textbox{CPU で実行} |> hvmargin 18pt;
+      ];
     ]);
   >
 
   +frame{PHP 8.4 での変更}<
     +fig-center(vconcat [
-      gap 40pt;
+      gap 20pt;
       mid-textbox{PHP スクリプト} |> with-frame;
-      gap 30pt;
-      mid-textbox{opcode (VM で実行)} |> with-frame;
-      gap 30pt;
+      gap 20pt;
+      hconcat [
+        mid-textbox{opcode} |> with-frame;
+        gap 20pt;
+        textbox{VM で実行} |> hvmargin 18pt;
+      ];
+      gap 20pt;
       mid-textbox{IR (中間表現)} |> with-frame;
-      gap 30pt;
-      mid-textbox{機械語 (CPU で実行)} |> with-frame;
+      gap 20pt;
+      hconcat [
+        mid-textbox{機械語} |> with-frame;
+        gap 20pt;
+        textbox{CPU で実行} |> hvmargin 18pt;
+      ];
     ]);
   >
 
   +frame{IR 導入のモチベーション}<
     +listing{
-      * opcode から直接の変換だと制限が大きい
-        ** 最適化しづらい
-          *** opcode の表現に制約を受ける
-          *** 抽象度が足りない
-          *** ソースコードをパースせずに実行するようなもの
-        ** CPU アーキテクチャごとに別々の実装を抱える
+      * opcode から直接機械語に変換では最適化しづらい
+        ** opcode の表現に制約を受ける
+        ** 抽象度が足りない
+        ** ソースコードをパースせずに実行するようなもの
+      * CPU アーキテクチャごとに別々の実装を抱える
+        ** 2 アーキテクチャで計 2.7 万行
       * PHP と密結合
         ** JIT と PHP 両方の知識が必要
         ** 誰もメンテナンスできない
@@ -213,14 +255,14 @@ document '<
   +frame{実際どうなった？}<
     +listing{
       * 性能
-        * 生成された機械語の速度: 0-5 \% 向上
-        * Tracing JIT のコンパイルにかかる時間: ほぼ同等
+        ** 生成された機械語の速度: 0-5 \% 向上
+        ** Tracing JIT のコンパイルにかかる時間: ほぼ同等
       * メンテナンス性
-        * \code(`ext/opcache/jit`); の変更量
-          ** 5.9万行追加、4.9万行削除
-        * アーキテクチャごとのコード生成部
-          ** x86: 1.1万行追加、1.6万行削除
-          ** arm64: 0.65万行追加、1.1万行削除
+        ** \code(`ext/opcache/jit`); の変更量
+          *** 5.9万行追加、4.9万行削除
+        ** アーキテクチャごとのコード生成部
+          *** x86: 1.1万行追加、1.6万行削除
+          *** arm64: 0.65万行追加、1.1万行削除
     }
   >
 
@@ -245,6 +287,30 @@ document '<
       gap 10pt;
       mid-textbox{中間表現 (IR) を挟むようになった};
     ]);
+  >
+
+  +frame{参考資料1}<
+    +listing{
+      * \link?:({PHP RFC: JIT})(`https://wiki.php.net/rfc/jit`);
+      * \link?:({PHP RFC: A new JIT implementation based on IR Framework})(`https://wiki.php.net/rfc/jit-ir`);
+      * \link?:({GitHub php/php-src: JIT for PHP based on DynAsm})(`https://github.com/php/php-src/pull/3792`);
+      * \link?:({GitHub php/php-src: Added JIT compiler for x86 and x86_64})(`https://github.com/php/php-src/commit/9a06876072b9ccb023d4a14426ccb587f10882f3`);
+      * \link?:({GitHub dstogov/ir})(`https://github.com/dstogov/ir`);
+      * \link?:({Slides by the author of PHP JIT and its IR})(`https://www.researchgate.net/publication/374470404_IR_JIT_Framework_a_base_for_the_next_generation_JIT_for_PHP`);
+      * \link?:({Nikic blog: PHP-7-Virtual-machine})(`https://www.npopov.com/2017/04/14/PHP-7-Virtual-machine.html`);
+      * \link?:({Nikic blog: How-opcache-works})(`https://www.npopov.com/2021/10/13/How-opcache-works.html`);
+      * \link?:({Nikic blog: The-opcache-optimizer})(`https://www.npopov.com/2022/05/22/The-opcache-optimizer.html`);
+      * \link?:({PHP Internals: Implementing a Range Operator into PHP})(`https://phpinternals.net/articles/implementing_a_range_operator_into_php#updating-the-compilation-stage`);
+    }
+  >
+
+  +frame{参考資料2}<
+    +listing{
+      * \link?:({Fedor Indutny's Blog: Sea of Nodes})(`https://darksi.de/d.sea-of-nodes/`);
+      * \link?:({GitHub SeaOfNodes/Simple})(`https://github.com/SeaOfNodes/Simple`);
+      * \link?:({LuaJIT DynAsm})(`https://luajit.org/dynasm.html`);
+      * \link?:({The Unofficial DynASM Documentation})(`https://corsix.github.io/dynasm-doc/`);
+    }
   >
 
 >
