@@ -56,6 +56,17 @@ document '<
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+  +frame{はじめに}<
+    +fig-center(vconcat [
+      gap 60pt;
+      big-textbox{来る新 JIT エンジンについて}
+    ]);
+    +fig-center(vconcat [
+      gap 30pt;
+      big-textbox{知った気になる}
+    ]);
+  >
+
   +frame{普通の PHP プログラム}<
     +fig-center(vconcat [
       gap 30pt;
@@ -93,7 +104,7 @@ document '<
       * Just In Time: ちょうど間に合って
       * 実行時に機械語へコンパイルする
       * PHP 8.0 で導入
-      * 他言語での事例
+      * 他の処理系での事例
         ** LuaJIT
         ** V8 TurboFan、Sparkplug、Maglev
         ** CRuby MJIT、YJIT、RJIT
@@ -229,7 +240,7 @@ document '<
     ]);
   >
 
-  +frame{IR 導入のモチベーション}<
+  +frame{現在の実装の問題点}<
     +listing{
       * opcode から直接機械語に変換では最適化しづらい
         ** opcode の表現に制約を受ける
@@ -246,7 +257,7 @@ document '<
   +frame{IR の特徴}<
     +listing{
       * より強力な最適化
-        ** 最適化しやすい表現に
+        ** 最適化しやすいデータ構造に
         ** SSA \+ CFG から Sea-of-Nodes へ
       * PHP に依存しない
     }
